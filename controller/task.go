@@ -9,11 +9,38 @@ import (
 )
 
 type Controller struct {
-	db *gorm.DB
+	DB *gorm.DB
+}
+
+type Task struct {
+	Title       string `json:"title"`
+	Description string `json:"description"`
+	Id          int64  `json:"id"`
 }
 
 func (cx *Controller) InsertData(c *fiber.Ctx) error {
-	cx.db.Create(&model.Task{Title: "Clean Room", Description: "Cleaning Room"})
+	var task Task
+
+	err := c.BodyParser(&task)
+
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).SendString("Invalid Request: " + err.Error())
+	}
+
+	cx.DB.Create(&model.Task{Title: task.Title, Description: task.Description})
+	return nil
+}
+
+func (cx *Controller) DeleteData(c *fiber.Ctx) error {
+	var task Task
+
+	err := c.BodyParser(&task)
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).SendString("Invalid Request: " + err.Error())
+	}
+
+	cx.DB.Where("id = ?", task.Id).Delete(&Task{})
+
 	return nil
 }
 
