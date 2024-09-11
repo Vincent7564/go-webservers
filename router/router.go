@@ -12,7 +12,7 @@ func printHelloWorld() {
 
 func TestingHandler(c *fiber.Ctx) error {
 	printHelloWorld()
-	return nil //Pindahin ke folder Controller
+	return nil 
 }
 
 func InitRouter(app *fiber.App) {
