@@ -1,20 +1,14 @@
 package router
 
 import (
-	"fmt"
+	"go-webserver/controller"
 
 	"github.com/gofiber/fiber/v2"
+	"gorm.io/gorm"
 )
 
-func printHelloWorld() {
-	fmt.Println("Hello World")
-}
-
-func TestingHandler(c *fiber.Ctx) error {
-	printHelloWorld()
-	return nil 
-}
-
-func InitRouter(app *fiber.App) {
-	app.Get("/testing", TestingHandler)
+func InitRouter(app *fiber.App, db *gorm.DB) {
+	contol := controller.Controller{}
+	app.Get("/testing", controller.TestingHandler)
+	app.Post("/insert", contol.InsertData)
 }

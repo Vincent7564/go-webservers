@@ -11,12 +11,12 @@ import (
 
 func main() {
 	app := fiber.New()
-	db, err := gorm.Open(mysql.Open("test.db"), &gorm.Config{})
-	db.AutoMigrate(&model.Product{})
+	db, err := gorm.Open(mysql.Open("todolist.db"), &gorm.Config{})
 	if err != nil {
 		panic("failed to connect database")
 	}
-	router.InitRouter(app)
+	db.AutoMigrate(&model.Task{})
+	router.InitRouter(app, db)
 
 	app.Listen(":3000")
 }
