@@ -41,7 +41,7 @@ func (cx *Controller) DeleteData(c *fiber.Ctx) error {
 
 	cx.DB.Where("id = ?", task.Id).Delete(&Task{})
 
-	return nil
+	return c.Status(fiber.StatusOK).SendString("Task deleted succesfully!")
 }
 
 func printHelloWorld() {
