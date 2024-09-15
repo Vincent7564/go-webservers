@@ -12,4 +12,7 @@ func InitRouter(app *fiber.App, db *gorm.DB) {
 	app.Get("/testing", controller.TestingHandler)
 	app.Post("/insert", contol.InsertData)
 	app.Post("/delete", contol.DeleteData)
+	app.Get("/get-all-data", contol.GetAllTask)
+	app.Post("/update-task", contol.UpdateTask)
+	app.Post("/update-active", contol.UpdateIsActive)
 }
