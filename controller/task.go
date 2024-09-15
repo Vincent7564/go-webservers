@@ -44,6 +44,11 @@ func (cx *Controller) DeleteData(c *fiber.Ctx) error {
 	return c.Status(fiber.StatusOK).SendString("Task deleted succesfully!")
 }
 
+func (cx *Controller) GetAllTask(c *fiber.Ctx) error {
+	result := cx.DB.Find(&Task{})
+	return c.JSONP(result)
+}
+
 func printHelloWorld() {
 	fmt.Println("Hello World")
 }
