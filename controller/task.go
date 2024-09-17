@@ -3,6 +3,7 @@ package controller
 import (
 	"fmt"
 	"go-webserver/model"
+	util "go-webserver/utils"
 
 	"github.com/gofiber/fiber/v2"
 	"gorm.io/gorm"
@@ -32,11 +33,7 @@ func (cx *Controller) InsertData(c *fiber.Ctx) error {
 
 	if err != nil {
 		return c.JSON(fiber.Map{
-			"data": Response{
-				ResponseCode:    "400",
-				ResponseMessage: "Data invalid, please re-check the request",
-				Result:          err.Error(),
-			},
+			"data": util.GenerateResponse("400", "Invalid Request", err.Error()),
 		})
 	}
 
