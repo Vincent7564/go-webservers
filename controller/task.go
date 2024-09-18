@@ -39,20 +39,12 @@ func (cx *Controller) InsertData(c *fiber.Ctx) error {
 
 	if err := cx.DB.Create(&model.Task{Title: task.Title, Description: task.Description, Is_Active: task.Is_active}).Error; err != nil {
 		return c.JSON(fiber.Map{
-			"data": Response{
-				ResponseCode:    "400",
-				ResponseMessage: "Failed to insert data",
-				Result:          err.Error(),
-			},
+			"data": util.GenerateResponse("400", "Failed to Insert Data", err.Error()),
 		})
 	}
 
 	return c.JSON(fiber.Map{
-		"data": Response{
-			ResponseCode:    "200",
-			ResponseMessage: "Data inserted succesfully",
-			Result:          task,
-		},
+		"data": util.GenerateResponse("200", "Data inserted succesfully", task),
 	})
 }
 
@@ -61,30 +53,18 @@ func (cx *Controller) DeleteData(c *fiber.Ctx) error {
 	err := c.BodyParser(&task)
 	if err != nil {
 		return c.JSON(fiber.Map{
-			"data": Response{
-				ResponseCode:    "400",
-				ResponseMessage: "Data invalid, please re-check the request",
-				Result:          err.Error(),
-			},
+			"data": util.GenerateResponse("400", "Invalid Request", err.Error()),
 		})
 	}
 
 	if err := cx.DB.Where("id = ?", task.Id).Delete(&Task{}).Error; err != nil {
 		return c.JSON(fiber.Map{
-			"data": Response{
-				ResponseCode:    "400",
-				ResponseMessage: "Data failed to deleted",
-				Result:          err.Error(),
-			},
+			"data": util.GenerateResponse("400", "Data failed to delete!", err.Error()),
 		})
 	}
 
 	return c.JSON(fiber.Map{
-		"data": Response{
-			ResponseCode:    "200",
-			ResponseMessage: "Data deleted succesfully",
-			Result:          task,
-		},
+		"data": util.GenerateResponse("200", "Data deleted succesfully", task),
 	})
 }
 
@@ -94,30 +74,18 @@ func (cx *Controller) UpdateTask(c *fiber.Ctx) error {
 
 	if err != nil {
 		return c.JSON(fiber.Map{
-			"data": Response{
-				ResponseCode:    "400",
-				ResponseMessage: "Data invalid, please re-check the request",
-				Result:          err.Error(),
-			},
+			"data": util.GenerateResponse("400", "Invalid Request", err.Error()),
 		})
 	}
 
 	if err := cx.DB.Model(&model.Task{}).Where("id = ?", task.Id).Updates(map[string]interface{}{"title": task.Title, "description": task.Description}).Error; err != nil {
 		return c.JSON(fiber.Map{
-			"data": Response{
-				ResponseCode:    "500",
-				ResponseMessage: "Update data failed",
-				Result:          err.Error(),
-			},
+			"data": util.GenerateResponse("400", "Failed to update data", err.Error()),
 		})
 	}
 
 	return c.JSON(fiber.Map{
-		"data": Response{
-			ResponseCode:    "200",
-			ResponseMessage: "Data updated succesfully",
-			Result:          task,
-		},
+		"data": util.GenerateResponse("200", "Data updated succesfully", task),
 	})
 }
 
@@ -126,49 +94,35 @@ func (cx *Controller) UpdateIsActive(c *fiber.Ctx) error {
 	err := c.BodyParser(&task)
 	if err != nil {
 		return c.JSON(fiber.Map{
-			"data": Response{
-				ResponseCode:    "400",
-				ResponseMessage: "Data invalid, please re-check the request",
-				Result:          err.Error(),
-			},
+			"data": util.GenerateResponse("400", "Invalid Request", err.Error()),
 		})
 	}
 
 	if err := cx.DB.Model(&model.Task{}).Where("id = ?", task.Id).Updates(map[string]interface{}{"is_active": task.Is_active}).Error; err != nil {
 		return c.JSON(fiber.Map{
-			"data": Response{
-				ResponseCode:    "500",
-				ResponseMessage: "Update data failed",
-				Result:          err.Error(),
-			},
+			"data": util.GenerateResponse("400", "Failed to update data", err.Error()),
 		})
 	}
 	return c.JSON(fiber.Map{
-		"data": Response{
-			ResponseCode:    "200",
-			ResponseMessage: "Data updated succesfully",
-			Result:          task,
-		},
+		"data": util.GenerateResponse("200", "Data updated succesfully", task),
 	})
 }
 
 func (cx *Controller) GetAllTask(c *fiber.Ctx) error {
 	var task []Task
-	response := Response{}
-	response.ResponseCode = "200"
-	response.ResponseMessage = "Data retrieved succesfully!"
 	if err := cx.DB.Find(&task).Error; err != nil {
-		response.ResponseCode = "500"
-		response.ResponseMessage = "Internal Server Error"
-		response.Result = err
 		return c.JSON(fiber.Map{
-			"data": response,
+			"data": util.GenerateResponse("400", "Invalid Request", err.Error()),
 		})
-	} else {
-		response.Result = task
 	}
+
+	result := fiber.Map{
+		"tasks": task,
+		"total": len(task),
+	}
+
 	return c.JSON(fiber.Map{
-		"data": response,
+		"data": util.GenerateResponse("200", "Success", result),
 	})
 }
 
