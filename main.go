@@ -5,12 +5,14 @@ import (
 	"go-webserver/router"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/cors"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 )
 
 func main() {
 	app := fiber.New()
+	app.Use(cors.New())
 	dsn := "root@tcp(127.0.0.1:3306)/Todolist?charset=utf8mb4&parseTime=True&loc=Local"
 	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 	if err != nil {
