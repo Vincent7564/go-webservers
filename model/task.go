@@ -1,10 +1,17 @@
 package model
 
-import "gorm.io/gorm"
+import (
+	"time"
+
+	"gorm.io/gorm"
+)
 
 type Task struct {
-	Title       string
-	Description string
-	Is_Active   bool
-	gorm.Model
+	ID          uint           `gorm:"primaryKey"`
+	Title       string         `gorm:"type:longtext"`
+	Description string         `gorm:"type:longtext"`
+	IsActive    bool           `gorm:"column:is_active"`
+	CreatedAt   time.Time      `gorm:"column:created_at;type:datetime;default:CURRENT_TIMESTAMP"` // No fractional seconds
+	UpdatedAt   time.Time      `gorm:"column:updated_at;type:datetime;default:CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP"`
+	DeletedAt   gorm.DeletedAt `gorm:"column:deleted_at;type:datetime"`
 }

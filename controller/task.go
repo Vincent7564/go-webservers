@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"go-webserver/model"
 	util "go-webserver/utils"
+	"time"
 
 	"github.com/gofiber/fiber/v2"
 	"gorm.io/gorm"
@@ -37,7 +38,7 @@ func (cx *Controller) InsertData(c *fiber.Ctx) error {
 		})
 	}
 
-	if err := cx.DB.Create(&model.Task{Title: task.Title, Description: task.Description, Is_Active: task.Is_active}).Error; err != nil {
+	if err := cx.DB.Create(&model.Task{Title: task.Title, Description: task.Description, IsActive: task.Is_active, CreatedAt: time.Now()}).Error; err != nil {
 		return c.JSON(fiber.Map{
 			"data": util.GenerateResponse("400", "Failed to Insert Data", err.Error()),
 		})
