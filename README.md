@@ -11,7 +11,7 @@ This webserver contains APIs for managing a **Todolist**.
 
 1. Clone this project:
    ```bash
-   git clone https://github.com/your-repo/go-webserver.git
+   git clone https://github.com/your-repo/go-webservers.git
    ```
 2. Perform the following command to install dependencies:
    ```bash
