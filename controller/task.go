@@ -14,13 +14,6 @@ type Controller struct {
 	DB *gorm.DB
 }
 
-type Task struct {
-	Title       string `json:"title"`
-	Description string `json:"description"`
-	Id          int64  `json:"id"`
-	Is_active   bool   `json:"is_active"`
-}
-
 type Response struct {
 	ResponseCode    string
 	ResponseMessage string
@@ -28,7 +21,7 @@ type Response struct {
 }
 
 func (cx *Controller) InsertData(c *fiber.Ctx) error {
-	var task Task
+	var task model.Task
 
 	err := c.BodyParser(&task)
 
@@ -38,7 +31,7 @@ func (cx *Controller) InsertData(c *fiber.Ctx) error {
 		})
 	}
 
-	if err := cx.DB.Create(&model.Task{Title: task.Title, Description: task.Description, IsActive: task.Is_active, CreatedAt: time.Now()}).Error; err != nil {
+	if err := cx.DB.Create(&model.Task{Title: task.Title, Description: task.Description, IsActive: task.IsActive, CreatedAt: time.Now()}).Error; err != nil {
 		return c.JSON(fiber.Map{
 			"data": util.GenerateResponse("400", "Failed to Insert Data", err.Error()),
 		})
@@ -50,7 +43,7 @@ func (cx *Controller) InsertData(c *fiber.Ctx) error {
 }
 
 func (cx *Controller) DeleteData(c *fiber.Ctx) error {
-	var task Task
+	var task model.Task
 	err := c.BodyParser(&task)
 	if err != nil {
 		return c.JSON(fiber.Map{
@@ -58,7 +51,7 @@ func (cx *Controller) DeleteData(c *fiber.Ctx) error {
 		})
 	}
 
-	if err := cx.DB.Where("id = ?", task.Id).Delete(&Task{}).Error; err != nil {
+	if err := cx.DB.Where("id = ?", task.ID).Delete(&model.Task{}).Error; err != nil {
 		return c.JSON(fiber.Map{
 			"data": util.GenerateResponse("400", "Data failed to delete!", err.Error()),
 		})
@@ -70,7 +63,7 @@ func (cx *Controller) DeleteData(c *fiber.Ctx) error {
 }
 
 func (cx *Controller) UpdateTask(c *fiber.Ctx) error {
-	var task Task
+	var task model.Task
 	err := c.BodyParser(&task)
 
 	if err != nil {
@@ -79,7 +72,7 @@ func (cx *Controller) UpdateTask(c *fiber.Ctx) error {
 		})
 	}
 
-	if err := cx.DB.Model(&model.Task{}).Where("id = ?", task.Id).Updates(map[string]interface{}{"title": task.Title, "description": task.Description}).Error; err != nil {
+	if err := cx.DB.Model(&model.Task{}).Where("id = ?", task.ID).Updates(map[string]interface{}{"title": task.Title, "description": task.Description}).Error; err != nil {
 		return c.JSON(fiber.Map{
 			"data": util.GenerateResponse("400", "Failed to update data", err.Error()),
 		})
@@ -91,7 +84,7 @@ func (cx *Controller) UpdateTask(c *fiber.Ctx) error {
 }
 
 func (cx *Controller) UpdateIsActive(c *fiber.Ctx) error {
-	var task Task
+	var task model.Task
 	err := c.BodyParser(&task)
 	if err != nil {
 		return c.JSON(fiber.Map{
@@ -99,7 +92,7 @@ func (cx *Controller) UpdateIsActive(c *fiber.Ctx) error {
 		})
 	}
 
-	if err := cx.DB.Model(&model.Task{}).Where("id = ?", task.Id).Updates(map[string]interface{}{"is_active": task.Is_active}).Error; err != nil {
+	if err := cx.DB.Model(&model.Task{}).Where("id = ?", task.ID).Updates(map[string]interface{}{"is_active": task.IsActive}).Error; err != nil {
 		return c.JSON(fiber.Map{
 			"data": util.GenerateResponse("400", "Failed to update data", err.Error()),
 		})
@@ -110,7 +103,7 @@ func (cx *Controller) UpdateIsActive(c *fiber.Ctx) error {
 }
 
 func (cx *Controller) GetAllTask(c *fiber.Ctx) error {
-	var task []Task
+	var task []model.Task
 	if err := cx.DB.Find(&task).Error; err != nil {
 		return c.JSON(fiber.Map{
 			"data": util.GenerateResponse("400", "Invalid Request", err.Error()),
